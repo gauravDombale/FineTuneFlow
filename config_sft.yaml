@@ -1,0 +1,13 @@
+model: "Qwen/Qwen2.5-0.5B-Instruct"
+data: "data"
+adapter_path: "adapters_sft"
+iters: 500
+batch_size: 2
+lora_layers: 6
+lora_rank: 4
+learning_rate: 1e-4
+save_every: 100
+test_every: 100
+test_batches: 50
+train: true
+test: true

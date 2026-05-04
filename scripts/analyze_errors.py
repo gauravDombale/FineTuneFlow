@@ -30,11 +30,12 @@ def analyze(mode):
 
         try:
             p = json.loads(p_str)
+            if not isinstance(p, dict):
+                raise ValueError("Not a dict")
         except Exception:
             invalid_json += 1
             if len(bad_examples) < 10:
                 bad_examples.append({"error": "invalid_json", "pred": p_str, "target": t_str, "prompt": prompt})
-            # Still attempt name/arg checks using raw string heuristics
             if t.get("name", "") not in p_str:
                 wrong_name += 1
             continue

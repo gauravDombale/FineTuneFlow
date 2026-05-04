@@ -16,23 +16,29 @@
 
 ## 🎯 Architecture & Pipeline
 
-```
-Raw Base Model
-     │
-     ▼
-[Prompting Baselines]    ← Few-shot evaluation, no training
-     │
-     ▼
-[SFT with QLoRA]         ← 500 iters, rank=4, 6 layers, batch=2
-     │
-     ▼
-[Error Analysis]         ← invalid_json / wrong_name / missing_args / extra_args
-     │
-     ▼
-[DPO Refinement]         ← 200 iters on chosen/rejected pairs, batch=1
-     │
-     ▼
-[FastAPI Demo]           ← POST /tool_call + GET /health
+```mermaid
+flowchart TD
+    A([🤖 Raw Base Model\nQwen2.5-0.5B-Instruct]) --> B
+
+    B["📊 Prompting Baselines\n─────────────────────\n• Zero-shot evaluation\n• Few-shot evaluation\nreport/prompt_baseline.json"]
+
+    B --> C["🔧 SFT with QLoRA\n─────────────────────\n• 500 iters · rank=4\n• 6 LoRA layers · batch=2\n• ~10-15 min on M2\nadapters_sft/"]
+
+    C --> D["🔍 Error Analysis\n─────────────────────\n• invalid_json %\n• wrong_name %\n• missing_args %\n• extra_args %\nreport/error_analysis_*.json"]
+
+    D --> E["⚖️ DPO Refinement\n─────────────────────\n• 200 iters · batch=1\n• grad_checkpoint=true\n• chosen vs rejected pairs\nadapters_dpo/"]
+
+    E --> F["📈 Ablation Report\n─────────────────────\n• 4-stage metric table\n• Inline qualitative examples\n• Dynamic insights\nreport/REPORT.md"]
+
+    F --> G["🌐 FastAPI Demo\n─────────────────────\n• POST /tool_call\n• GET /health\n• Swagger UI /docs\nlocalhost:8000"]
+
+    style A fill:#1e1e2e,stroke:#cba6f7,color:#cdd6f4
+    style B fill:#1e1e2e,stroke:#89b4fa,color:#cdd6f4
+    style C fill:#1e1e2e,stroke:#a6e3a1,color:#cdd6f4
+    style D fill:#1e1e2e,stroke:#fab387,color:#cdd6f4
+    style E fill:#1e1e2e,stroke:#f38ba8,color:#cdd6f4
+    style F fill:#1e1e2e,stroke:#f9e2af,color:#cdd6f4
+    style G fill:#1e1e2e,stroke:#94e2d5,color:#cdd6f4
 ```
 
 ### Components

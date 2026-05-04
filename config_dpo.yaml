@@ -1,0 +1,12 @@
+model: "Qwen/Qwen2.5-0.5B-Instruct"
+resume_adapter_file: "adapters_sft/adapters.safetensors"
+adapter_path: "adapters_dpo"
+data: "data_dpo_sft"
+iters: 200
+batch_size: 2
+learning_rate: 5e-6
+save_every: 50
+test_every: 50
+test_batches: 50
+train: true
+test: false

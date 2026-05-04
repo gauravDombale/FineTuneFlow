@@ -6,53 +6,56 @@ def analyze(mode):
     if not os.path.exists(pred_file):
         print(f"No predictions found for {mode}")
         return None
-        
+
     with open(pred_file, "r") as f:
         data = json.load(f)
-        
+
     total = len(data)
     invalid_json = 0
     wrong_name = 0
     missing_args = 0
     extra_args = 0
-    
+
     bad_examples = []
-    
+
     for item in data:
         t_str = item["target"]
         p_str = item["pred"]
         prompt = item["prompt"]
-        
+
         try:
             t = json.loads(t_str)
         except:
             t = {}
-            
+
         try:
             p = json.loads(p_str)
-        except Exception as e:
+        except Exception:
             invalid_json += 1
             if len(bad_examples) < 10:
                 bad_examples.append({"error": "invalid_json", "pred": p_str, "target": t_str, "prompt": prompt})
+            # Still attempt name/arg checks using raw string heuristics
+            if t.get("name", "") not in p_str:
+                wrong_name += 1
             continue
-            
+
+        # Check all error types independently (no early continue)
         if p.get("name") != t.get("name"):
             wrong_name += 1
             if len(bad_examples) < 10:
                 bad_examples.append({"error": "wrong_name", "pred": p_str, "target": t_str, "prompt": prompt})
-            continue
-            
+
         t_args = set(t.get("arguments", {}).keys())
         p_args = set(p.get("arguments", {}).keys())
-        
+
         missing = t_args - p_args
         extra = p_args - t_args
-        
+
         if missing:
             missing_args += 1
             if len(bad_examples) < 10:
                 bad_examples.append({"error": "missing_args", "missing": list(missing), "pred": p_str, "target": t_str, "prompt": prompt})
-        
+
         if extra:
             extra_args += 1
             if len(bad_examples) < 10:
@@ -68,7 +71,8 @@ def analyze(mode):
     return res
 
 def main():
-    modes = ["base", "sft"]
+    # Analyze all stages including DPO
+    modes = ["base", "sft", "dpo"]
     for m in modes:
         res = analyze(m)
         if res:

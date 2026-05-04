@@ -1,0 +1,15 @@
+# Virtual environment
+.venv/
+__pycache__/
+*.pyc
+
+# Data and Models
+data/
+data_dpo/
+data_dpo_sft/
+adapters_sft/
+adapters_dpo/
+report/
+
+# OS files
+.DS_Store

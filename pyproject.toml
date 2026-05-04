@@ -1,0 +1,16 @@
+[project]
+name = "finetune-flow"
+version = "0.1.0"
+description = "Tool-calling LLM alignment with MLX"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "mlx",
+    "mlx-lm",
+    "fastapi",
+    "uvicorn",
+    "datasets",
+    "scikit-learn",
+    "pydantic",
+    "tqdm",
+]

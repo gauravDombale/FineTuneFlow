@@ -13,3 +13,6 @@ report/
 
 # OS files
 .DS_Store
+
+# Instructions
+AGENT.md

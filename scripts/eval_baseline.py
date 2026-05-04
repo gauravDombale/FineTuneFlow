@@ -14,7 +14,10 @@ def eval_predictions(predictions, targets):
     for p_str, t_str in zip(predictions, targets):
         try:
             p = json.loads(p_str)
-            parsed += 1
+            if isinstance(p, dict):
+                parsed += 1
+            else:
+                p = None  # Valid JSON but not a dict (e.g. a bare string)
         except:
             p = None
 
